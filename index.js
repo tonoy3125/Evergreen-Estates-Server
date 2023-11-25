@@ -1,7 +1,7 @@
 const express = require('express');
 require('dotenv').config()
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 var jwt = require('jsonwebtoken');
 const app = express()
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
@@ -71,6 +71,24 @@ async function run() {
                 res.send(result);
             } catch (error) {
                 console.error('Error in /users endpoint:', error);
+            }
+        });
+
+        // Users Related Api *patch*
+        app.patch('/users/admin/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+                const { role } = req.body;
+                const updatedRole = {
+                    $set: {
+                        role: role
+                    }
+                };
+                const result = await userCollection.updateOne(query, updatedRole);
+                res.send(result);
+            } catch (error) {
+                console.error("Error updating user role:", error);
             }
         });
 
