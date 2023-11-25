@@ -51,11 +51,37 @@ async function run() {
         });
 
 
+        // Middlewares
+
+        const verifyToken = (req, res, next) => {
+            try {
+                console.log('inside verify token', req.headers.authorization);
+
+                if (!req.headers.authorization) {
+                    return res.status(401).send({ message: 'unauthorized access' });
+                }
+
+                const token = req.headers.authorization.split(' ')[1];
+
+                jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+                    if (err) {
+                        return res.status(401).send({ message: 'unauthorized access' });
+                    }
+
+                    req.decoded = decoded;
+                    next();
+                });
+            } catch (error) {
+                console.error("Error in verifyToken middleware:", error);
+            }
+        };
+
+
 
         // Users related Api
 
         // Users related Api **Get**
-        app.get('/users', async (req, res) => {
+        app.get('/users', verifyToken, async (req, res) => {
             try {
                 // const user = req.header
                 // console.log(req.headers)
