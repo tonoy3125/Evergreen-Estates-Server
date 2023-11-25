@@ -92,6 +92,29 @@ async function run() {
             }
         });
 
+        // admin email token
+        app.get('/user/admin/:email', verifyToken, async (req, res) => {
+            try {
+                const email = req.params.email;
+
+                if (email !== req.decoded.email) {
+                    return res.status(403).send({ message: 'forbidden access' });
+                }
+
+                const query = { email: email };
+                const user = await userCollection.findOne(query);
+                let admin = false;
+
+                if (user) {
+                    admin = user?.role === 'admin';
+                }
+
+                res.send({ admin });
+            } catch (error) {
+                console.error('Error in /user/admin/:email endpoint:', error);
+            }
+        });
+
         // Users Related Api *Post* 
         app.post('/users', async (req, res) => {
             try {
