@@ -39,6 +39,16 @@ async function run() {
         const userCollection = client.db('evergreenDB').collection('users')
 
 
+        // jwt related Api
+        app.post('/jwt', async (req, res) => {
+            try {
+                const user = req.body;
+                const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+                res.send({ token });
+            } catch (error) {
+                console.error("Error creating JWT:", error);
+            }
+        });
 
 
 
