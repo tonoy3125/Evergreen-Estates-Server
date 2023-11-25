@@ -43,6 +43,20 @@ async function run() {
 
 
         // Users related Api
+
+        // Users related Api **Get**
+        app.get('/users', async (req, res) => {
+            try {
+                // const user = req.header
+                // console.log(req.headers)
+                const result = await userCollection.find().toArray()
+                res.send(result)
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        });
+
+        // Users Related Api *Post* 
         app.post('/users', async (req, res) => {
             try {
                 const user = req.body;
