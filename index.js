@@ -44,15 +44,21 @@ async function run() {
 
         // Users related Api
         app.post('/users', async (req, res) => {
-            const user = req.body
-            const query = { email: user.email }
-            const exitingUser = await userCollection.findOne(query)
-            if (exitingUser) {
-                return res.send({ message: 'user already exits', insertId: null })
+            try {
+                const user = req.body;
+                const query = { email: user.email };
+                const existingUser = await userCollection.findOne(query);
+
+                if (existingUser) {
+                    return res.send({ message: 'User already exists', insertId: null });
+                }
+
+                const result = await userCollection.insertOne(user);
+                res.send(result);
+            } catch (error) {
+                console.error('Error in /users endpoint:', error);
             }
-            const result = await userCollection.insertOne(user)
-            res.send(result)
-        })
+        });
 
 
 
