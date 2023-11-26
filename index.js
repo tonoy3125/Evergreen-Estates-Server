@@ -43,12 +43,26 @@ async function run() {
 
 
         // Property related api
+        // Property related api **get**
         app.get('/property', async (req, res) => {
             try {
                 const result = await propertyCollection.find().toArray();
                 res.send(result);
             } catch (error) {
                 console.error('Error fetching menu:', error);
+            }
+        });
+
+
+        app.get('/postedproperty/:agentemail', async (req, res) => {
+            try {
+                const find = req.params.agentemail;
+                const query = { agentemail: find };
+                console.log(query)
+                const result = await propertyCollection.find(query).toArray()
+                res.send(result);
+            } catch (error) {
+                console.error(error);
             }
         });
 
