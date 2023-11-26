@@ -80,7 +80,7 @@ async function run() {
         });
 
 
-        // // Properties related api
+        // // Properties related api ***Get****
         app.get('/properties/:id', async (req, res) => {
             try {
                 const id = req.params.id
@@ -93,6 +93,17 @@ async function run() {
                 console.error(error)
             }
         })
+
+        app.delete('/properties/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+                const result = await propertyCollection.deleteOne(query);
+                res.send(result);
+            } catch (error) {
+                console.error(error);
+            }
+        });
 
 
 
