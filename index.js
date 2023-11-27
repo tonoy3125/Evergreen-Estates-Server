@@ -46,7 +46,14 @@ async function run() {
 
         // WishList Related Api
         // WishList Related Api **Get**
-
+        app.get('/wishlist', async (req, res) => {
+            try {
+                const result = await wishlistCollection.find().toArray();
+                res.send(result);
+            } catch (error) {
+                console.error('Error fetching menu:', error);
+            }
+        });
 
 
         // WishList Related Api **Post**
