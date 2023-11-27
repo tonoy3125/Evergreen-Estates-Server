@@ -38,8 +38,23 @@ async function run() {
         // Collection
         const userCollection = client.db('evergreenDB').collection('users')
         const propertyCollection = client.db('evergreenDB').collection('property')
+        const reviewCollection = client.db('evergreenDB').collection('review')
 
 
+
+
+
+        // Review related api
+        // Review related api **Post**
+        app.post('/review', async (req, res) => {
+            try {
+                const item = req.body;
+                const result = await reviewCollection.insertOne(item);
+                res.send(result);
+            } catch (error) {
+                console.error('Error in /menu route:', error);
+            }
+        });
 
 
         // Property related api
