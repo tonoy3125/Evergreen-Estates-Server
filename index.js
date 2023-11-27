@@ -56,10 +56,10 @@ async function run() {
         });
 
 
-        app.get('/reviewer/:title', async (req, res) => {
+        app.get('/reviewer/:productId', async (req, res) => {
             try {
-                const find = req.params.title;
-                const query = { title: find };
+                const find = req.params.productId;
+                const query = { productId: find };
                 console.log(query)
                 const result = await reviewCollection.find(query).toArray()
                 res.send(result);
