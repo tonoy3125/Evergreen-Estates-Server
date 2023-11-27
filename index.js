@@ -93,6 +93,18 @@ async function run() {
             }
         });
 
+        app.get('/myreviews/:email', async (req, res) => {
+            try {
+                const find = req.params.email;
+                const query = { email: find };
+                console.log(query)
+                const result = await reviewCollection.find(query).toArray()
+                res.send(result);
+            } catch (error) {
+                console.error(error);
+            }
+        });
+
 
         app.get('/reviewer/:productId', async (req, res) => {
             try {
