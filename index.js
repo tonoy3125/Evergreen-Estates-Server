@@ -43,6 +43,7 @@ async function run() {
 
 
         // Property related api
+
         // Property related api **get**
         app.get('/property', async (req, res) => {
             try {
@@ -53,7 +54,7 @@ async function run() {
             }
         });
 
-
+        // Get a property by agent email
         app.get('/postedproperty/:agentemail', async (req, res) => {
             try {
                 const find = req.params.agentemail;
@@ -80,7 +81,7 @@ async function run() {
         });
 
 
-        // // Properties related api ***Get****
+        // Properties related api ***Get****
         app.get('/properties/:id', async (req, res) => {
             try {
                 const id = req.params.id
@@ -94,7 +95,7 @@ async function run() {
             }
         })
 
-
+        // Properties related api ***Put****
         app.put('/properties/:id', async (req, res) => {
             try {
                 const id = req.params.id;
@@ -113,7 +114,8 @@ async function run() {
                         year: updatedProperty.year,
                         bed: updatedProperty.bed,
                         bath: updatedProperty.bath,
-                        size: updatedProperty.size
+                        size: updatedProperty.size,
+                        description: updatedProperty.description,
                     }
                 }
                 const result = await propertyCollection.updateOne(filter, property, options)
@@ -124,7 +126,7 @@ async function run() {
             }
         })
 
-
+        // Properties related api ***Delete****
         app.delete('/properties/:id', async (req, res) => {
             try {
                 const id = req.params.id;
