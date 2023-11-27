@@ -56,6 +56,19 @@ async function run() {
         });
 
 
+        app.get('/reviewer/:title', async (req, res) => {
+            try {
+                const find = req.params.title;
+                const query = { title: find };
+                console.log(query)
+                const result = await reviewCollection.find(query).toArray()
+                res.send(result);
+            } catch (error) {
+                console.error(error);
+            }
+        });
+
+
         // Review related api **Post**
         app.post('/review', async (req, res) => {
             try {
