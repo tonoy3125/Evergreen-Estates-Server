@@ -45,6 +45,17 @@ async function run() {
 
 
         // Review related api
+        // Review related api **Get**
+        app.get('/review', async (req, res) => {
+            try {
+                const result = await reviewCollection.find().toArray();
+                res.send(result);
+            } catch (error) {
+                console.error('Error fetching menu:', error);
+            }
+        });
+
+
         // Review related api **Post**
         app.post('/review', async (req, res) => {
             try {
