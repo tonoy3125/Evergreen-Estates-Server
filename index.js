@@ -158,6 +158,19 @@ async function run() {
         });
 
 
+        app.patch('/property/:id', async (req, res) => {
+            const { status } = req.body;
+            const query = { _id: new ObjectId(req.params.id) }
+            const updateStatus = {
+                $set: {
+                    status: status
+                }
+            }
+            const result = await propertyCollection.updateOne(query, updateStatus)
+            res.send(result)
+        })
+
+
         // Properties related api ***Get****
         app.get('/properties/:id', async (req, res) => {
             try {
