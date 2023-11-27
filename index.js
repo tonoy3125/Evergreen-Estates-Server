@@ -66,6 +66,17 @@ async function run() {
                 console.error('Error in /menu route:', error);
             }
         });
+        // WishList Related Api **Delete**
+        app.delete('/wishlist/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+                const result = await wishlistCollection.deleteOne(query);
+                res.send(result);
+            } catch (error) {
+                console.error(error);
+            }
+        });
 
 
 
