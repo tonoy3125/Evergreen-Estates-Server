@@ -518,6 +518,24 @@ async function run() {
             }
         });
 
+
+        // handle fraud agent
+        app.patch('/users/fraud/:id', async (req, res) => {
+            const { status } = req.body
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const updateStatus = {
+                $set: {
+                    status: status
+                }
+            }
+            const statusResult = await userCollection.updateOne(query, updateStatus);
+            const updatedUser = await userCollection.findOne(query)
+            const fraudEmail = { agentemail: updatedUser.email }
+            const deletedPropertiesResult = await propertyCollection.deleteMany(fraudEmail)
+            res.send({ statusResult, deletedPropertiesResult })
+        })
+
         // User Related Api *Delete*
         app.delete('/users/:id', async (req, res) => {
             try {
