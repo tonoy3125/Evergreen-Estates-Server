@@ -45,6 +45,20 @@ async function run() {
 
 
         // propertyBrought related api
+
+
+        // propertyBrought related api **Get**
+        app.get('/propertyBrought', async (req, res) => {
+            try {
+                const result = await propertybroughtCollection.find().toArray();
+                res.send(result);
+            } catch (error) {
+                console.error('Error fetching menu:', error);
+            }
+        });
+
+
+        // propertyBrought related api ** Post**
         app.post('/propertyBrought', async (req, res) => {
             try {
                 const item = req.body;
