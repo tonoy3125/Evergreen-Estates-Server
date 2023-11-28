@@ -106,16 +106,40 @@ async function run() {
         });
 
         // propertyBrought related api ** Post**
-        app.patch('/propertyBrought/:id', async (req, res) => {
+        // update multiple data status
+        app.put('/api/request/:requestId', async (req, res) => {
             const { status } = req.body;
-            const query = { _id: new ObjectId(req.params.id) }
-            const updateStatus = {
+            const requestId = req.params.requestId;
+            const query = { _id: new ObjectId(requestId) }
+            const acceptedRequest = await propertybroughtCollection.findOne(query);
+            const updateAcceptedStatus = {
                 $set: {
                     status: status
                 }
             }
-            const result = await propertybroughtCollection.updateOne(query, updateStatus)
-            res.send(result)
+            const accptedResult = await propertybroughtCollection.updateOne(query, updateAcceptedStatus);
+            const rejectQuery = { wishlistId: acceptedRequest.wishlistId, _id: { $ne: new ObjectId(requestId) } }
+            const updateRejectedStatus = {
+                $set: {
+                    status: "rejected"
+                }
+            }
+            const rejectedResult = await propertybroughtCollection.updateMany(rejectQuery, updateRejectedStatus)
+            res.send({ accptedResult, rejectedResult })
+
+        })
+        // update reject
+        app.patch('/api/reject/:requestId', async (req, res) => {
+            const { status } = req.body;
+            const requestId = req.params.requestId;
+            const query = { _id: new ObjectId(requestId) }
+            const updateRejectedStatus = {
+                $set: {
+                    status: status
+                }
+            }
+            const rejectResult = await propertybroughtCollection.updateOne(query, updateRejectedStatus)
+            res.send(rejectResult)
         })
 
 
@@ -552,7 +576,7 @@ async function run() {
 
         // Payment Related Api
         // Payment Related Api
-        app.get('/payment/:agentemail', async (req, res) => {
+        app.get('/payments/:agentemail', async (req, res) => {
             try {
                 const find = req.params.agentemail;
                 const query = { agentemail: find };
