@@ -217,6 +217,18 @@ async function run() {
             }
         });
 
+        // Review related api **delete**
+        app.delete('/review/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+                const result = await reviewCollection.deleteOne(query);
+                res.send(result);
+            } catch (error) {
+                console.error(error);
+            }
+        });
+
 
         // Property related api
 
