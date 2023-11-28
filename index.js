@@ -56,6 +56,8 @@ async function run() {
                 console.error('Error fetching menu:', error);
             }
         });
+
+
         // propertyBrought related api **Get** Buyer email
         app.get('/propertyBroughts/:buyeremail', async (req, res) => {
             try {
@@ -80,6 +82,19 @@ async function run() {
                 console.error('Error in /menu route:', error);
             }
         });
+
+        // propertyBrought related api ** Post**
+        app.patch('/propertyBrought/:id', async (req, res) => {
+            const { status } = req.body;
+            const query = { _id: new ObjectId(req.params.id) }
+            const updateStatus = {
+                $set: {
+                    status: status
+                }
+            }
+            const result = await propertybroughtCollection.updateOne(query, updateStatus)
+            res.send(result)
+        })
 
 
 
