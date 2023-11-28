@@ -41,29 +41,12 @@ async function run() {
         const reviewCollection = client.db('evergreenDB').collection('review')
         const wishlistCollection = client.db('evergreenDB').collection('wishlist')
         const propertybroughtCollection = client.db('evergreenDB').collection('propertyBrought')
+        const paymentCollection = client.db('evergreenDB').collection('payments')
 
 
 
 
-        // Payment Related Api
-        // Payment Related Api **Post**
-        app.post('/create-payment-intent', async (req, res) => {
-            try {
-                const { price } = req.body;
-                const amount = parseInt(price * 100);
-                console.log(amount, 'amount inside the intent');
-                const paymentIntent = await stripe.paymentIntents.create({
-                    amount: amount,
-                    currency: 'usd',
-                    payment_method_types: ['card']
-                });
-                res.send({
-                    clientSecret: paymentIntent.client_secret
-                });
-            } catch (error) {
-                console.error('Error creating payment intent:', error.message);
-            }
-        });
+
 
 
 
@@ -80,6 +63,19 @@ async function run() {
                 res.send(result);
             } catch (error) {
                 console.error('Error fetching menu:', error);
+            }
+        });
+
+
+        app.get('/paymentBrought/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+                console.log(query)
+                const result = await propertybroughtCollection.find(query).toArray()
+                res.send(result);
+            } catch (error) {
+                console.error(error);
             }
         });
 
@@ -533,6 +529,35 @@ async function run() {
                 console.error("Error deleting user:", error);
             }
         });
+
+
+
+        // Payment Related Api
+        // Payment Related Api **Post**
+        app.post('/create-payment-intent', async (req, res) => {
+            try {
+                const { price } = req.body;
+                const amount = parseInt(price * 100);
+                console.log(amount, 'amount inside the intent');
+                const paymentIntent = await stripe.paymentIntents.create({
+                    amount: amount,
+                    currency: 'usd',
+                    payment_method_types: ['card']
+                });
+                res.send({
+                    clientSecret: paymentIntent.client_secret
+                });
+            } catch (error) {
+                console.error('Error creating payment intent:', error.message);
+            }
+        });
+
+        app.post('/payments', async (req, res) => {
+            const payment = req.body;
+            const result = await paymentCollection.insertOne(payment)
+            console.log('payment info', payment)
+            res.send(result)
+        })
 
 
 
