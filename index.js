@@ -554,9 +554,17 @@ async function run() {
 
         app.post('/payments', async (req, res) => {
             const payment = req.body;
+            const boughtStatus = { _id: new ObjectId(payment.paymentId) }
+            const updateStatus = {
+                $set: {
+                    status: "Bought",
+                    transactionId: payment.transjectionId
+                }
+            }
+            const status = await propertybroughtCollection.updateOne(boughtStatus, updateStatus)
             const result = await paymentCollection.insertOne(payment)
             console.log('payment info', payment)
-            res.send(result)
+            res.send({ result, status })
         })
 
 
