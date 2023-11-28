@@ -287,6 +287,12 @@ async function run() {
                 console.error('Error fetching menu:', error);
             }
         });
+        // Property related api **get**
+        app.get('/propertys/:verified', async (req, res) => {
+            const query = { status: "verified" }
+            const result = await propertyCollection.find(query).toArray()
+            res.send(result)
+        })
 
         // Get a property by agent email
         app.get('/postedproperty/:agentemail', async (req, res) => {
