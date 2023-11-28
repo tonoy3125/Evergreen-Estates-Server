@@ -40,6 +40,21 @@ async function run() {
         const propertyCollection = client.db('evergreenDB').collection('property')
         const reviewCollection = client.db('evergreenDB').collection('review')
         const wishlistCollection = client.db('evergreenDB').collection('wishlist')
+        const propertybroughtCollection = client.db('evergreenDB').collection('propertyBrought')
+
+
+
+        // propertyBrought related api
+        app.post('/propertyBrought', async (req, res) => {
+            try {
+                const item = req.body;
+                const result = await propertybroughtCollection.insertOne(item);
+                res.send(result);
+            } catch (error) {
+                console.error('Error in /menu route:', error);
+            }
+        });
+
 
 
 
