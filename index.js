@@ -55,6 +55,25 @@ async function run() {
             }
         });
 
+
+        app.get('/wishlists/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const query = { _id: new ObjectId(id) }
+            console.log(query)
+            const wishlistItem = await wishlistCollection.findOne(query)
+            console.log(wishlistItem)
+            const priceRange = wishlistItem.price;
+            const [minPrice, maxPrice] = priceRange
+                .split('-')
+                .map((price) => parseFloat(price.trim().replace(/,/g, '')));
+            const result = {
+                ...wishlistItem,
+                price: [minPrice, maxPrice],
+            };
+            res.send(result);
+        })
+
         app.get('/wishlister/:email', async (req, res) => {
             try {
                 const find = req.params.email;
