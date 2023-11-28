@@ -219,7 +219,7 @@ async function run() {
         // Review related api **Get**
         app.get('/review', async (req, res) => {
             try {
-                const result = await reviewCollection.find().toArray();
+                const result = await reviewCollection.find().sort({ date: -1 }).toArray();
                 res.send(result);
             } catch (error) {
                 console.error('Error fetching menu:', error);
@@ -288,7 +288,7 @@ async function run() {
             }
         });
         // Property related api **get**
-        app.get('/propertys/:verified', async (req, res) => {
+        app.get('/propertys/verified', async (req, res) => {
             const query = { status: "verified" }
             const result = await propertyCollection.find(query).toArray()
             res.send(result)
