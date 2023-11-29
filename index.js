@@ -290,7 +290,19 @@ async function run() {
         // Property related api **get**
         app.get('/propertys/verified', async (req, res) => {
             const query = { status: "verified" }
-            const result = await propertyCollection.find(query).toArray()
+            const filter = req.query
+            const options = {
+                sort: {}
+            };
+            if (filter.sort) {
+                if (filter.sort === 'asc' || filter.sort === 'desc') {
+                    options.sort.price = filter.sort === 'asc' ? 1 : -1;
+                } else {
+                    res.status(400).send('Invalid sort parameter. Use "asc" or "desc".');
+                    return;
+                }
+            }
+            const result = await propertyCollection.find(query,options).toArray()
             res.send(result)
         })
 
@@ -639,8 +651,8 @@ async function run() {
 
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        // await client.db("admin").command({ ping: 1 });
+        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
