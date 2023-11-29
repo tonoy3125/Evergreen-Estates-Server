@@ -49,6 +49,65 @@ async function run() {
 
 
 
+        // Middlewares
+
+        const verifyToken = (req, res, next) => {
+            try {
+                console.log('inside verify token', req.headers.authorization);
+
+                if (!req.headers.authorization) {
+                    return res.status(401).send({ message: 'unauthorized access' });
+                }
+
+                const token = req.headers.authorization.split(' ')[1];
+
+                jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+                    if (err) {
+                        return res.status(401).send({ message: 'unauthorized access' });
+                    }
+
+                    req.decoded = decoded;
+                    next();
+                });
+            } catch (error) {
+                console.error("Error in verifyToken middleware:", error);
+            }
+        };
+        // Verify Admin
+        const verifyAdmin = async (req, res, next) => {
+            try {
+                const email = req.decoded.email;
+                const query = { email: email };
+                const user = await userCollection.findOne(query);
+                const isAdmin = user?.role === 'admin';
+
+                if (!isAdmin) {
+                    return res.status(403).send({ message: 'forbidden access' });
+                }
+
+                next();
+            } catch (error) {
+                console.error('Error in verifyAdmin middleware:', error);
+            }
+        };
+
+
+        const verifyAgent = async (req, res, next) => {
+            try {
+                const email = req.decoded.email;
+                const query = { email: email };
+                const user = await userCollection.findOne(query);
+                const isAgent = user?.role === 'agent';
+
+                if (!isAgent) {
+                    return res.status(403).send({ message: 'forbidden access' });
+                }
+
+                next();
+            } catch (error) {
+                console.error('Error in verifyAgent middleware:', error);
+            }
+        };
 
 
 
@@ -157,7 +216,7 @@ async function run() {
             }
         });
 
-
+        // WishList Related Api ** Get** By id
         app.get('/wishlists/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id)
@@ -175,7 +234,7 @@ async function run() {
             };
             res.send(result);
         })
-
+        // WishList Related Api ** Get** By email
         app.get('/wishlister/:email', async (req, res) => {
             try {
                 const find = req.params.email;
@@ -225,7 +284,7 @@ async function run() {
                 console.error('Error fetching menu:', error);
             }
         });
-
+        // Review related api **Get** by email
         app.get('/myreviews/:email', async (req, res) => {
             try {
                 const find = req.params.email;
@@ -237,8 +296,7 @@ async function run() {
                 console.error(error);
             }
         });
-
-
+        // Review related api **Get** By ProductId
         app.get('/reviewer/:productId', async (req, res) => {
             try {
                 const find = req.params.productId;
@@ -279,7 +337,7 @@ async function run() {
         // Property related api
 
         // Property related api **get**
-        app.get('/property', async (req, res) => {
+        app.get('/property', verifyToken, verifyAdmin, async (req, res) => {
             try {
                 const result = await propertyCollection.find().toArray();
                 res.send(result);
@@ -289,26 +347,34 @@ async function run() {
         });
 
 
-
+        // Property related api **get** advertise section
         app.get("/advertise", async (req, res) => {
-            const query = { advertise: true };
-            const cursor = propertyCollection.find(query);
-            const result = await cursor.toArray();
-            res.send(result);
+            try {
+                const query = { advertise: true };
+                const cursor = propertyCollection.find(query);
+                const result = await cursor.toArray();
+                res.send(result);
+            } catch (error) {
+                console.error("Error in /advertise endpoint:", error);
+            }
+        });
+
+        // Property related api **get** advertisement section
+        app.get("/advertisement", verifyToken, verifyAdmin, async (req, res) => {
+            try {
+                const query = { status: "verified" };
+                const cursor = propertyCollection.find(query);
+                const result = await cursor.toArray();
+                res.send(result);
+                console.log("Request processed successfully");
+            } catch (error) {
+                console.error("Error in /advertisement endpoint:", error);
+            }
         });
 
 
-        app.get("/advertisement", async (req, res) => {
-            const query = { status: "verified" };
-            const cursor = propertyCollection.find(query);
-            const result = await cursor.toArray();
-            res.send(result);
-            console.log();
-        });
-
-
-        // patch methoud
-        app.patch("/advertise/:id", async (req, res) => {
+        // Property related api **get** advertise section by id
+        app.patch("/advertise/:id", verifyToken, verifyAdmin, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const updatedDoc = {
@@ -387,7 +453,7 @@ async function run() {
             }
         });
 
-
+        // Property related api **Patch** 
         app.patch('/property/:id', async (req, res) => {
             const { status } = req.body;
             const query = { _id: new ObjectId(req.params.id) }
@@ -474,47 +540,7 @@ async function run() {
         });
 
 
-        // Middlewares
 
-        const verifyToken = (req, res, next) => {
-            try {
-                console.log('inside verify token', req.headers.authorization);
-
-                if (!req.headers.authorization) {
-                    return res.status(401).send({ message: 'unauthorized access' });
-                }
-
-                const token = req.headers.authorization.split(' ')[1];
-
-                jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-                    if (err) {
-                        return res.status(401).send({ message: 'unauthorized access' });
-                    }
-
-                    req.decoded = decoded;
-                    next();
-                });
-            } catch (error) {
-                console.error("Error in verifyToken middleware:", error);
-            }
-        };
-
-        const verifyAdmin = async (req, res, next) => {
-            try {
-                const email = req.decoded.email;
-                const query = { email: email };
-                const user = await userCollection.findOne(query);
-                const isAdmin = user?.role === 'admin';
-
-                if (!isAdmin) {
-                    return res.status(403).send({ message: 'forbidden access' });
-                }
-
-                next();
-            } catch (error) {
-                console.error('Error in verifyAdmin middleware:', error);
-            }
-        };
 
 
 
@@ -580,7 +606,7 @@ async function run() {
         });
 
         // Users Related Api *Post* 
-        app.post('/users', async (req, res) => {
+        app.post('/users', verifyToken, verifyAdmin, async (req, res) => {
             try {
                 const user = req.body;
                 const query = { email: user.email };
@@ -598,7 +624,7 @@ async function run() {
         });
 
         // Users Related Api *patch*
-        app.patch('/users/admin/:id', async (req, res) => {
+        app.patch('/users/admin/:id', verifyToken, verifyAdmin, async (req, res) => {
             try {
                 const id = req.params.id;
                 const query = { _id: new ObjectId(id) };
@@ -617,7 +643,7 @@ async function run() {
 
 
         // handle fraud agent
-        app.patch('/users/fraud/:id', async (req, res) => {
+        app.patch('/users/fraud/:id', verifyToken, verifyAdmin, async (req, res) => {
             const { status } = req.body
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
@@ -634,7 +660,7 @@ async function run() {
         })
 
         // User Related Api *Delete*
-        app.delete('/users/:id', async (req, res) => {
+        app.delete('/users/:id', verifyToken, verifyAdmin, async (req, res) => {
             try {
                 const id = req.params.id;
                 const query = { _id: new ObjectId(id) };
@@ -649,7 +675,7 @@ async function run() {
 
         // Payment Related Api
         // Payment Related Api
-        app.get('/payments/:agentemail', async (req, res) => {
+        app.get('/payments/:agentemail', verifyToken, async (req, res) => {
             try {
                 const find = req.params.agentemail;
                 const query = { agentemail: find };
@@ -684,7 +710,7 @@ async function run() {
             }
         });
 
-        app.post('/payments', async (req, res) => {
+        app.post('/payments', verifyToken, async (req, res) => {
             const payment = req.body;
             const boughtStatus = { _id: new ObjectId(payment.paymentId) }
             const updateStatus = {
