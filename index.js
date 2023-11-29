@@ -287,6 +287,61 @@ async function run() {
                 console.error('Error fetching menu:', error);
             }
         });
+
+
+
+        app.get("/advertise", async (req, res) => {
+            const query = { advertise: true };
+            const cursor = propertyCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+
+        app.get("/advertisement", async (req, res) => {
+            const query = { status: "verified" };
+            const cursor = propertyCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+            console.log();
+        });
+
+
+        // patch methoud
+        app.patch("/advertise/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    advertise: true,
+                },
+            };
+
+            const result = await propertyCollection.updateOne(filter, updatedDoc);
+            res.send(result);
+        });
+
+
+
+        //  advertise  remov
+        app.patch("/advertiseRemove/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    advertise: false,
+                },
+            };
+
+            const result = await propertyCollection.updateOne(filter, updatedDoc);
+            res.send(result);
+        }
+        );
+
+
+
+
+
         // Property related api **get**
         app.get('/propertys/verified', async (req, res) => {
             const query = { status: "verified" }
@@ -302,7 +357,7 @@ async function run() {
                     return;
                 }
             }
-            const result = await propertyCollection.find(query,options).toArray()
+            const result = await propertyCollection.find(query, options).toArray()
             res.send(result)
         })
 
