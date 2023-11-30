@@ -81,10 +81,10 @@ async function run() {
 
 
         // propertyBrought related api **Get** Buyer email
-        app.get('/propertyBroughts/:buyeremail', async (req, res) => {
+        app.get('/propertyBroughts/:agentemail', async (req, res) => {
             try {
-                const find = req.params.buyeremail;
-                const query = { buyeremail: find };
+                const find = req.params.agentemail;
+                const query = { agentemail: find };
                 console.log(query)
                 const result = await propertybroughtCollection.find(query).toArray()
                 res.send(result);
@@ -118,7 +118,7 @@ async function run() {
                 }
             }
             const accptedResult = await propertybroughtCollection.updateOne(query, updateAcceptedStatus);
-            const rejectQuery = { wishlistId: acceptedRequest.wishlistId, _id: { $ne: new ObjectId(requestId) } }
+            const rejectQuery = { propertiesId: acceptedRequest.propertiesId, _id: { $ne: new ObjectId(requestId) } }
             const updateRejectedStatus = {
                 $set: {
                     status: "rejected"
