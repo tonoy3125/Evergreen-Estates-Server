@@ -5,6 +5,13 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 var jwt = require('jsonwebtoken');
 const app = express()
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
+const formData = require('form-data')
+const Mailgun = require('mailgun.js')
+const mailgun = new Mailgun(formData)
+const mg = mailgun.client({
+    username: 'api',
+    key: process.env.MAIL_GUN_API_KEYS,
+});
 const port = process.env.PORT || 5000
 
 
@@ -80,11 +87,26 @@ async function run() {
         });
 
 
+
+
+
         // propertyBrought related api **Get** Buyer email
         app.get('/propertyBroughts/:agentemail', async (req, res) => {
             try {
                 const find = req.params.agentemail;
                 const query = { agentemail: find };
+                console.log(query)
+                const result = await propertybroughtCollection.find(query).toArray()
+                res.send(result);
+            } catch (error) {
+                console.error(error);
+            }
+        });
+        // propertyBrought related api **Get** Buyer email
+        app.get('/propertyBroughtsUser/:buyeremail', async (req, res) => {
+            try {
+                const find = req.params.buyeremail;
+                const query = { buyeremail: find };
                 console.log(query)
                 const result = await propertybroughtCollection.find(query).toArray()
                 res.send(result);
@@ -721,6 +743,24 @@ async function run() {
             const status = await propertybroughtCollection.updateOne(boughtStatus, updateStatus)
             const result = await paymentCollection.insertOne(payment)
             console.log('payment info', payment)
+            // Send User email about payment confirmation
+            mg.messages
+                .create(process.env.MAIL_SENDING_DOMAIN, {
+                    from: "Mailgun Sandbox <postmaster@sandbox4df33430222540ddba730294e501e1d2.mailgun.org>",
+                    to: ["shaifshajedt@gmail.com"],
+                    subject: "Evergreen Estates Payment Confirmation",
+                    text: "Testing some Mailgun awesomness!",
+                    html: `<div>
+                    <h2>Thank you for your payment</h2>
+                    <h3>Your Transaction Id : <strong>${payment.transjectionId} </strong></h3>
+                    <p>We would like to get your feedback about your food</p>
+                    </div>`
+                })
+                .then(msg => console.log(msg)) // logs response data
+                .catch(err => console.log(err)); // logs any error`;
+
+
+
             res.send({ result, status })
         })
 
