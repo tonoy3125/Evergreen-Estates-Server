@@ -46,6 +46,7 @@ async function run() {
         const userCollection = client.db('evergreenDB').collection('users')
         const propertyCollection = client.db('evergreenDB').collection('property')
         const reviewCollection = client.db('evergreenDB').collection('review')
+        const reportCollection = client.db('evergreenDB').collection('report')
         const wishlistCollection = client.db('evergreenDB').collection('wishlist')
         const propertybroughtCollection = client.db('evergreenDB').collection('propertyBrought')
         const paymentCollection = client.db('evergreenDB').collection('payments')
@@ -295,6 +296,59 @@ async function run() {
                 console.error(error);
             }
         });
+
+
+
+        // report related api
+
+        // Api to insert reported Properties
+        app.post('/reportedProperties', async (req, res) => {
+            try {
+                const report = req.body;
+                const result = await reportCollection.insertOne(report)
+                res.send(result)
+            }
+            catch (error) {
+                console.error("Error in inserting reported Property", error)
+                res.status(500).send("Internal Server Error")
+            }
+        })
+
+        // Api to get reported properties
+        app.get('/reportedProperties', async (req, res) => {
+            try {
+                const result = await reportCollection.find().toArray()
+                res.send(result)
+            }
+            catch (error) {
+                console.error('Error occured in get reportedProperties', error)
+                res.status(500).send("Internal Server Error")
+            }
+        })
+
+        // Api to updte reported properties and delete properties
+        app.patch('/reportedProperties/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const { status, propertyId } = req.body;
+                const query = { _id: new ObjectId(id) }
+                const updateReportStatus = {
+                    $set: {
+                        status: status
+                    }
+                }
+                const updateResult = await reportCollection.updateOne(query, updateReportStatus)
+                const propertyQuery = { _id: new ObjectId(propertyId) }
+                const deleteProperty = await propertyCollection.deleteOne(propertyQuery)
+                const reviewquery = { propertyId: propertyId }
+                const deleteReview = await reviewCollection.deleteMany(reviewquery)
+                res.send({ updateResult, deleteProperty, deleteReview })
+            }
+            catch (error) {
+                console.error('Error occured in get reportedProperties', error)
+                res.status(500).send("Internal Server Error")
+            }
+        })
 
 
         // Property related api
