@@ -29,6 +29,9 @@ app.use("/api/v1", PropertyRouter);
 //Review Router declaration Middleware routes
 app.use("/api/v1", ReviewRouter);
 
+//Review Router declaration Middleware routes
+app.use("/api/v1", ReviewRouter);
+
 // Error Router
 app.use((err, req, res, next) => {
     res.status(500).send("Something went wrong");

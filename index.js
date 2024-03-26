@@ -300,6 +300,7 @@ async function run() {
                 console.error(error);
             }
         });
+        // okk
 
 
 
@@ -317,6 +318,7 @@ async function run() {
                 res.status(500).send("Internal Server Error")
             }
         })
+        // okk
 
         // Api to get reported properties
         app.get('/reportedProperties', async (req, res) => {
@@ -329,6 +331,7 @@ async function run() {
                 res.status(500).send("Internal Server Error")
             }
         })
+        // okk
 
         // Api to updte reported properties and delete properties
         app.patch('/reportedProperties/:id', async (req, res) => {
@@ -353,6 +356,7 @@ async function run() {
                 res.status(500).send("Internal Server Error")
             }
         })
+        // okk
 
 
         // Property related api
