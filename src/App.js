@@ -10,6 +10,7 @@ const UsersRouter = require("./Route/UsersRoute/UsersRoute");
 const PropertyRouter = require("./Route/PropertyRoute/PropertyRoute");
 const ReviewRouter = require("./Route/ReviewRoute/ReviewRoute");
 const WishlistRouter = require("./Route/WishlistRoute/WishlistRoute");
+const PropertyBroughtRouter = require("./Route/PropertyBroughtRoute/PropertyBroughtRoute");
 
 
 
@@ -35,6 +36,9 @@ app.use("/api/v1", ReviewRouter);
 
 //Wishlist Router declaration Middleware routes
 app.use("/api/v1", WishlistRouter);
+
+//PropertyBrought Router declaration Middleware routes
+app.use("/api/v1", PropertyBroughtRouter);
 
 // Error Router
 app.use((err, req, res, next) => {

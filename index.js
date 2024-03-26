@@ -73,6 +73,7 @@ async function run() {
                 console.error('Error fetching menu:', error);
             }
         });
+        // ok
 
 
         app.get('/paymentBrought/:id', async (req, res) => {
@@ -86,6 +87,7 @@ async function run() {
                 console.error(error);
             }
         });
+        // okk
 
 
 
@@ -103,6 +105,7 @@ async function run() {
                 console.error(error);
             }
         });
+        // okk
         // propertyBrought related api **Get** Buyer email
         app.get('/propertyBroughtsUser/:buyeremail', async (req, res) => {
             try {
@@ -115,6 +118,7 @@ async function run() {
                 console.error(error);
             }
         });
+        // okk
 
 
         // propertyBrought related api ** Post**
@@ -127,6 +131,7 @@ async function run() {
                 console.error('Error in /menu route:', error);
             }
         });
+        // okk
 
         // propertyBrought related api ** Post**
         // update multiple data status
@@ -151,6 +156,7 @@ async function run() {
             res.send({ accptedResult, rejectedResult })
 
         })
+        // okk
         // update reject
         app.patch('/api/reject/:requestId', async (req, res) => {
             const { status } = req.body;
@@ -164,6 +170,7 @@ async function run() {
             const rejectResult = await propertybroughtCollection.updateOne(query, updateRejectedStatus)
             res.send(rejectResult)
         })
+        // okk
 
 
 
@@ -238,6 +245,7 @@ async function run() {
                 console.error(error);
             }
         });
+        // okk
 
 
 
