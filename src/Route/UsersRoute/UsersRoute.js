@@ -7,10 +7,13 @@ const usersDeleteController = require('../../Controller/UsersController/usersDel
 const usersAdminPatchController = require('../../Controller/UsersController/usersAdminPatchController');
 const usersFraudPatchController = require('../../Controller/UsersController/usersFraudPatchController');
 const usersJwtPostController = require('../../Controller/UsersController/usersJwtPostController');
+const usersAdminGetByEmailController = require('../../Controller/UsersController/usersAdminGetByEmailController');
+const verifyToken = require('../../Middleware/verifyToken');
 
 
 
 UsersRouter.get('/users', usersGetController);
+UsersRouter.get('/user/admin/:email', verifyToken, usersAdminGetByEmailController);
 UsersRouter.post('/users', usersPostController);
 UsersRouter.post('/jwt', usersJwtPostController);
 UsersRouter.delete('/users/:id', usersDeleteController);
