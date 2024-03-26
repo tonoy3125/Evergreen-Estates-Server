@@ -248,6 +248,7 @@ async function run() {
                 console.error('Error fetching menu:', error);
             }
         });
+        // okk
         // Review related api **Get** by email
         app.get('/myreviews/:email', async (req, res) => {
             try {
@@ -260,6 +261,7 @@ async function run() {
                 console.error(error);
             }
         });
+        // okk
         // Review related api **Get** By ProductId
         app.get('/reviewer/:productId', async (req, res) => {
             try {
@@ -272,6 +274,7 @@ async function run() {
                 console.error(error);
             }
         });
+        // okk
 
 
         // Review related api **Post**
@@ -284,6 +287,7 @@ async function run() {
                 console.error('Error in /menu route:', error);
             }
         });
+        // okk
 
         // Review related api **delete**
         app.delete('/review/:id', async (req, res) => {
@@ -362,6 +366,7 @@ async function run() {
                 console.error('Error fetching menu:', error);
             }
         });
+        // okk
 
 
         // Property related api **get** advertise section
@@ -375,6 +380,7 @@ async function run() {
                 console.error("Error in /advertise endpoint:", error);
             }
         });
+        // okk
 
         // Property related api **get** advertisement section
         app.get("/advertisement", async (req, res) => {
@@ -388,6 +394,7 @@ async function run() {
                 console.error("Error in /advertisement endpoint:", error);
             }
         });
+        // okk
 
 
         // Property related api **get** advertise section by id
@@ -403,6 +410,7 @@ async function run() {
             const result = await propertyCollection.updateOne(filter, updatedDoc);
             res.send(result);
         });
+        // okk
 
 
 
@@ -420,6 +428,7 @@ async function run() {
             res.send(result);
         }
         );
+        // okk
 
 
 
@@ -443,6 +452,7 @@ async function run() {
             const result = await propertyCollection.find(query, options).toArray()
             res.send(result)
         })
+        // okk
 
         // Get a property by agent email
         app.get('/postedproperty/:agentemail', async (req, res) => {
@@ -456,6 +466,7 @@ async function run() {
                 console.error(error);
             }
         });
+        // okk
 
 
 
@@ -469,6 +480,7 @@ async function run() {
                 console.error('Error in /menu route:', error);
             }
         });
+        // okk
 
         // Property related api **Patch** 
         app.patch('/property/:id', async (req, res) => {
@@ -482,6 +494,7 @@ async function run() {
             const result = await propertyCollection.updateOne(query, updateStatus)
             res.send(result)
         })
+        // okk
 
 
         // Properties related api ***Get****
@@ -497,6 +510,7 @@ async function run() {
                 console.error(error)
             }
         })
+        // okkk
 
         // Properties related api ***Put****
         app.put('/properties/:id', async (req, res) => {
@@ -528,6 +542,7 @@ async function run() {
                 console.error(error);
             }
         })
+        // okk
 
         // Properties related api ***Delete****
         app.delete('/properties/:id', async (req, res) => {
@@ -540,6 +555,8 @@ async function run() {
                 console.error(error);
             }
         });
+
+        // okk
 
 
 
@@ -632,7 +649,8 @@ async function run() {
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
-        });
+        }); 
+        // Ok
 
         // admin email token
         app.get('/user/admin/:email', verifyToken, async (req, res) => {
@@ -697,6 +715,7 @@ async function run() {
                 console.error('Error in /users endpoint:', error);
             }
         });
+        // ok
 
         // Users Related Api *patch*
         app.patch('/users/admin/:id', async (req, res) => {
@@ -715,6 +734,7 @@ async function run() {
                 console.error("Error updating user role:", error);
             }
         });
+        // okk
 
 
         // handle fraud agent
@@ -733,6 +753,7 @@ async function run() {
             const deletedPropertiesResult = await propertyCollection.deleteMany(fraudEmail)
             res.send({ statusResult, deletedPropertiesResult })
         })
+        // okk
 
         // User Related Api *Delete*
         app.delete('/users/:id', async (req, res) => {
@@ -745,6 +766,7 @@ async function run() {
                 console.error("Error deleting user:", error);
             }
         });
+        // okk
 
 
 
@@ -819,7 +841,7 @@ async function run() {
         })
 
 
-        // Stats Or Analytics
+        // Admin Stats Or Analytics
         app.get('/admin-stats', async (req, res) => {
             const users = await userCollection.estimatedDocumentCount()
             const properties = await propertyCollection.estimatedDocumentCount()
@@ -855,6 +877,13 @@ async function run() {
                 paidProperties,
                 revenue
             })
+        })
+
+
+        // Agent Stats Or Analytics
+
+        app.get('/agent-stats', async (req, res) => {
+            
         })
 
 
